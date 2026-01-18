@@ -15,13 +15,17 @@ type AlertDoc = {
   upiId?: string;
   url?: string;
   risk?: string;
-  createdAt?: any;
+  createdAt?: unknown;
 };
 
 function RiskPill({ risk }: { risk?: string }) {
   const r = (risk || "").toLowerCase();
   const cls =
-    r === "high" ? "pill pill-high" : r === "medium" ? "pill pill-medium" : "pill pill-low";
+    r === "high"
+      ? "pill pill-high"
+      : r === "medium"
+      ? "pill pill-medium"
+      : "pill pill-low";
   return <span className={cls}>{risk || "unknown"}</span>;
 }
 
@@ -44,7 +48,10 @@ export default function AlertsPage() {
     const unsubAlerts = onSnapshot(
       q,
       (snap) => {
-        const list = snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
+        const list: AlertDoc[] = snap.docs.map((d) => {
+          const data = d.data() as Omit<AlertDoc, "id">;
+          return { id: d.id, ...data };
+        });
         setAlerts(list);
         setLoading(false);
       },
@@ -141,7 +148,13 @@ export default function AlertsPage() {
           <div className="grid" style={{ marginTop: 12 }}>
             {filtered.map((a) => (
               <div key={a.id} className="card">
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 12,
+                  }}
+                >
                   <strong>{(a.scamType || "scam").toUpperCase()}</strong>
                   <RiskPill risk={a.risk} />
                 </div>

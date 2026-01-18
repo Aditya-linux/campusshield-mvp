@@ -20,7 +20,11 @@ type AlertDoc = {
 function RiskPill({ risk }: { risk?: string }) {
   const r = (risk || "").toLowerCase();
   const cls =
-    r === "high" ? "pill pill-high" : r === "medium" ? "pill pill-medium" : "pill pill-low";
+    r === "high"
+      ? "pill pill-high"
+      : r === "medium"
+      ? "pill pill-medium"
+      : "pill pill-low";
   return <span className={cls}>{risk || "unknown"}</span>;
 }
 
@@ -57,7 +61,8 @@ export default function CheckPage() {
       return;
     }
 
-    setResult({ id: docSnap.id, ...(docSnap.data() as any) });
+    const data = docSnap.data() as Omit<AlertDoc, "id">;
+    setResult({ id: docSnap.id, ...data });
   };
 
   return (

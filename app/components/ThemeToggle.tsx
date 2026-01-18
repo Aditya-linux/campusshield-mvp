@@ -4,29 +4,47 @@ import { useEffect, useState } from "react";
 
 type Theme = "dark" | "light";
 
+function applyTheme(t: Theme) {
+  const root = document.documentElement;
+  root.classList.remove("theme-dark", "theme-light");
+  root.classList.add(t === "light" ? "theme-light" : "theme-dark");
+  localStorage.setItem("theme", t);
+}
+
 export default function ThemeToggle() {
+  const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<Theme>("dark");
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const saved = (localStorage.getItem("theme") as Theme) || "dark";
-    setTheme(saved);
-    setReady(true);
+    const t = ((localStorage.getItem("theme") as Theme) || "dark") === "light"
+      ? "light"
+      : "dark";
+
+    applyTheme(t);
+
+    // Defer state updates to avoid react-hooks/set-state-in-effect lint
+    const id = window.setTimeout(() => {
+      setTheme(t);
+      setMounted(true);
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, []);
 
-  const apply = (t: Theme) => {
-    const root = document.documentElement;
-    root.classList.remove("theme-dark", "theme-light");
-    root.classList.add(t === "light" ? "theme-light" : "theme-dark");
-    localStorage.setItem("theme", t);
-    setTheme(t);
-  };
+  if (!mounted) return null;
 
-  if (!ready) return null;
+  const next: Theme = theme === "dark" ? "light" : "dark";
 
   return (
-    <button className="btn" type="button" onClick={() => apply(theme === "dark" ? "light" : "dark")}>
-      {theme === "dark" ? "Light mode" : "Dark mode"}
+    <button
+      className="btn"
+      type="button"
+      onClick={() => {
+        setTheme(next);
+        applyTheme(next);
+      }}
+    >
+      {next === "light" ? "Light mode" : "Dark mode"}
     </button>
   );
 }

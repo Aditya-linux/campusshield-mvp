@@ -29,13 +29,17 @@ type ReportDoc = {
   amount?: number | null;
   proofLink?: string;
   status?: string;
-  createdAt?: any;
+  createdAt?: unknown;
 };
 
 function RiskPill({ risk }: { risk: string }) {
   const r = (risk || "").toLowerCase();
   const cls =
-    r === "high" ? "pill pill-high" : r === "medium" ? "pill pill-medium" : "pill pill-low";
+    r === "high"
+      ? "pill pill-high"
+      : r === "medium"
+      ? "pill pill-medium"
+      : "pill pill-low";
   return <span className={cls}>{risk || "unknown"}</span>;
 }
 
@@ -72,7 +76,10 @@ export default function AdminPage() {
     const unsub = onSnapshot(
       q,
       (snap) => {
-        const list = snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
+        const list: ReportDoc[] = snap.docs.map((d) => {
+          const data = d.data() as Omit<ReportDoc, "id">;
+          return { id: d.id, ...data };
+        });
         setReports(list);
       },
       (err) => console.error(err)
@@ -84,8 +91,10 @@ export default function AdminPage() {
   const approve = async (r: ReportDoc) => {
     setMsg("");
 
-    const summary =
-      (r.description || "Scam report approved. Stay alert.").slice(0, 160);
+    const summary = (r.description || "Scam report approved. Stay alert.").slice(
+      0,
+      160
+    );
 
     const risk = r.amount && r.amount >= 500 ? "high" : "medium";
 
@@ -133,7 +142,9 @@ export default function AdminPage() {
               <div className="brand-badge">🛡️</div>
               <div>
                 <h1 style={{ fontSize: 18, margin: 0 }}>CampusShield</h1>
-                <p style={{ margin: 0, opacity: 0.75, fontSize: 12 }}>Admin review</p>
+                <p style={{ margin: 0, opacity: 0.75, fontSize: 12 }}>
+                  Admin review
+                </p>
               </div>
             </div>
 
@@ -170,7 +181,13 @@ export default function AdminPage() {
 
               return (
                 <div key={r.id} className="card">
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                    }}
+                  >
                     <div>
                       <strong>{(r.scamType || "scam").toUpperCase()}</strong>
                       <div className="helper" style={{ marginTop: 4 }}>
@@ -180,13 +197,17 @@ export default function AdminPage() {
                     <RiskPill risk={risk} />
                   </div>
 
-                  <p style={{ marginTop: 10, marginBottom: 10 }}>{r.description}</p>
+                  <p style={{ marginTop: 10, marginBottom: 10 }}>
+                    {r.description}
+                  </p>
 
                   <div className="helper">
                     {r.phone ? <div>Phone: {r.phone}</div> : null}
                     {r.upiId ? <div>UPI: {r.upiId}</div> : null}
                     {r.url ? <div>URL: {r.url}</div> : null}
-                    {typeof r.amount === "number" ? <div>Amount: {r.amount}</div> : null}
+                    {typeof r.amount === "number" ? (
+                      <div>Amount: {r.amount}</div>
+                    ) : null}
                     {r.proofLink ? (
                       <div>
                         Proof:{" "}
@@ -198,7 +219,10 @@ export default function AdminPage() {
                   </div>
 
                   <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-                    <button className="btn btn-primary" onClick={() => approve(r)}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => approve(r)}
+                    >
                       Approve
                     </button>
                     <button className="btn" onClick={() => reject(r)}>
