@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CampusShield (MVP)
 
-## Getting Started
+CampusShield helps students avoid campus scams. Students report suspicious offers with phone, UPI ID, or URLs. An admin reviews reports and publishes verified alerts. Anyone can search an identifier before paying.
 
-First, run the development server:
+## Problem
+Campus groups and chats are full of internship fee scams, fake UPI requests, and phishing links. Students lose money because there is no simple “check before you pay” tool for the campus.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Solution
+- Report scams with key identifiers (phone, UPI, URL) + description + proof link
+- Admin review flow (approve or reject)
+- Approved reports become alerts
+- Search page checks an identifier against verified alerts
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
+- Google Sign-In (Firebase Auth)
+- Reports collection with status workflow (pending, approved, rejected)
+- Alerts feed with risk tags
+- Search by phone, UPI ID, or URL
+- Dark/Light mode toggle (persists across pages)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
+- Next.js (App Router)
+- Firebase Authentication
+- Cloud Firestore
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Firestore Collections
+- `reports` (user submissions)
+- `alerts` (published verified alerts)
+- `admin` (admin role docs)
 
-## Learn More
+## Local Setup
+1. Install deps
+   - `npm install`
+2. Add Firebase env
+   - Create `.env.local` with your Firebase config keys
+3. Run
+   - `npm run dev`
+4. Open
+   - `http://localhost:3000`
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Demo Flow
+1. Sign in
+2. Submit a report (`/report`)
+3. Approve it as admin (`/admin`)
+4. View it in alerts (`/alerts`)
+5. Search identifier (`/check`)
