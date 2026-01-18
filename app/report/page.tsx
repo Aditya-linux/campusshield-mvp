@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../lib/firebase";
 import ThemeToggle from "../components/ThemeToggle";
 
+export const dynamic = "force-dynamic";
+
+
 export default function ReportPage() {
   const [uid, setUid] = useState<string>("");
 

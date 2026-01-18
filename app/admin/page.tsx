@@ -18,6 +18,9 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../lib/firebase";
 import ThemeToggle from "../components/ThemeToggle";
 
+export const dynamic = "force-dynamic";
+
+
 type ReportDoc = {
   id: string;
   scamType?: string;

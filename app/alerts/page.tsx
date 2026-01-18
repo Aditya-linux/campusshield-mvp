@@ -7,6 +7,9 @@ import { useEffect, useMemo, useState } from "react";
 import { auth, db } from "../lib/firebase";
 import ThemeToggle from "../components/ThemeToggle";
 
+export const dynamic = "force-dynamic";
+
+
 type AlertDoc = {
   id: string;
   scamType?: string;
